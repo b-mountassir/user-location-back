@@ -1,4 +1,5 @@
 class Api::V1::SessionsController < Devise::SessionsController
+  respond_to :json
   def create
     user = User.find_by(email: sign_in_params[:email])
 
