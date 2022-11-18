@@ -14,6 +14,9 @@ Rails.application.routes.draw do
         }
 
       resource :user, only: [:show, :update]
+
+      resources :answers, controller: 'api/v1/answers'
+      resources :questions, controller: 'api/v1/questions'
     end
   end
 end

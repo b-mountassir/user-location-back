@@ -5,9 +5,13 @@ class Api::V1::SessionsController < Devise::SessionsController
 
     if user && user.valid_password?(sign_in_params[:password])
       render json: {
-        "data" => {"email" => user.email},
-        "accessToken" => user.generate_jwt
-      }
+                     "data" => {
+                         "id" => user.id,
+                         "email" => user.email
+                     },
+                     "accessToken" => user.generate_jwt
+                   }
+
     else
       render json: { message: 'Email or password is invalid' }, status: :unprocessable_entity
     end
