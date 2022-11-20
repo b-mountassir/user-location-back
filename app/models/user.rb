@@ -9,7 +9,6 @@ class User
   validates_uniqueness_of :email
 
   ## Database authenticatable
-  field :id,                 type: BSON::ObjectId
   field :email,              type: String, default: ""
   field :encrypted_password, type: String, default: ""
 

@@ -1,51 +1,57 @@
 class Api::V1::AnswersController < ApplicationController
-  before_action :set_api_v1_answer, only: %i[ show update destroy ]
+  before_action :set_question
+  before_action :set_answer, only: %i[ show update destroy ]
+  before_action :authenticate_user!, except: %i[ index ]
+  PAGINATION_LIMIT = 5.freeze
 
   # GET /api/v1/answers
   def index
-    @api_v1_answers = Api::V1::Answer.all
+    @answers = @question.answers.limit(PAGINATION_LIMIT).offset(offset)
 
-    render json: @api_v1_answers
-  end
-
-  # GET /api/v1/answers/1
-  def show
-    render json: @api_v1_answer
+    render json: @answers
   end
 
   # POST /api/v1/answers
   def create
-    @api_v1_answer = Api::V1::Answer.new(api_v1_answer_params)
+    @answer = @question.answers.new(answer_params.merge(user_id: current_user.id))
 
-    if @api_v1_answer.save
-      render json: @api_v1_answer, status: :created, location: @api_v1_answer
+    if @answer.save
+      render json: @answer, status: :created, location: @answer
     else
-      render json: @api_v1_answer.errors, status: :unprocessable_entity
+      render json: @answer.errors, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /api/v1/answers/1
   def update
-    if @api_v1_answer.update(api_v1_answer_params)
-      render json: @api_v1_answer
+    if @answer.update(answer_params)
+      render json: @answer
     else
-      render json: @api_v1_answer.errors, status: :unprocessable_entity
+      render json: @answer.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /api/v1/answers/1
   def destroy
-    @api_v1_answer.destroy
+    @answer.destroy
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_api_v1_answer
-      @api_v1_answer = Api::V1::Answer.find(params[:id])
+    def set_question
+      @question = Question.find(answer_params[:question_id])
+    end
+
+    def set_answer
+      @answer = Answer.find(params[:id])
+    end
+
+    def offset
+      params.fetch(:offset, 0).to_i
     end
 
     # Only allow a list of trusted parameters through.
-    def api_v1_answer_params
-      params.fetch(:api_v1_answer, {})
+    def answer_params
+      params.permit(:question_id, :content, :id, :offset)
     end
 end

@@ -6,7 +6,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     if user && user.valid_password?(sign_in_params[:password])
       render json: {
                      "data" => {
-                         "id" => user.id,
+                         "id" => user.id.to_str,
                          "email" => user.email
                      },
                      "accessToken" => user.generate_jwt

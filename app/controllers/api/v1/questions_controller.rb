@@ -1,9 +1,11 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
   before_action :set_question, only: %i[ show update destroy ]
+  before_action :authenticate_user!, except: %i[ show index ]
 
+  PAGINATION_LIMIT = 10.freeze
   # GET /questions
   def index
-    @questions = Question.all
+    @questions = Question.all.limit(PAGINATION_LIMIT).offset(offset)
 
     render json: @questions
   end
@@ -15,7 +17,7 @@ class Api::V1::QuestionsController < Api::V1::BaseController
 
   # POST /questions
   def create
-    @question = Question.new(question_params)
+    @question = Question.new(question_params.merge(user_id: current_user.id))
 
     if @question.save
       render json: @question, status: :created, location: @question
@@ -35,7 +37,11 @@ class Api::V1::QuestionsController < Api::V1::BaseController
 
   # DELETE /questions/1
   def destroy
-    @question.destroy
+    if current_user.id == @question.user_id
+      @question.destroy
+    else
+      render json: @question.errors, status: :unprocessable_entity
+    end
   end
 
   private
@@ -43,9 +49,11 @@ class Api::V1::QuestionsController < Api::V1::BaseController
     def set_question
       @question = Question.find(params[:id])
     end
-
+    def offset
+      params.fetch(:offset, 0).to_i
+    end
     # Only allow a list of trusted parameters through.
     def question_params
-      params.fetch(:question, {})
+      params.require(:question).permit(questions: [:title, :content, :location, :id])
     end
 end

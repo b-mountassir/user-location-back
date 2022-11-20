@@ -11,12 +11,15 @@ Rails.application.routes.draw do
         path_names: {
           sign_in: :login,
           sign_up: :sign_up,
+          sign_out: :sign_out
         }
 
       resource :user, only: [:show, :update]
 
-      resources :answers, controller: 'api/v1/answers'
-      resources :questions, controller: 'api/v1/questions'
+      get :questions, to: 'api/v1/questions#index'
+      get 'questions/:id', to: 'api/v1/questions#show'
+      put :questions, to: 'api/v1/questions#create_in_bulk'
+      get 'answers/:question_id', to: 'api/v1/answers#index'
     end
   end
 end
