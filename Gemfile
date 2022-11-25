@@ -36,7 +36,7 @@ gem 'devise'
 
 gem 'jwt'
 
-gem 'underscore_params'
+gem 'rx', git: 'https://github.com/ReactiveX/RxRuby.git'
 
 
 group :development, :test do
