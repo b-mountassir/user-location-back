@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/ReactiveX/RxRuby.git
+  revision: fb1c5cfd49bc63df5d47ef4b2f84700eb6ab1da6
+  specs:
+    rx (0.0.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -183,6 +189,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.4)
+  rx!
   tzinfo-data
 
 RUBY VERSION

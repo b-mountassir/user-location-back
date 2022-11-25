@@ -17,9 +17,12 @@ Rails.application.routes.draw do
       resource :user, only: [:show, :update]
 
       get :questions, to: 'api/v1/questions#index'
-      get 'questions/:id', to: 'api/v1/questions#show'
-      put :questions, to: 'api/v1/questions#create_in_bulk'
       get 'answers/:question_id', to: 'api/v1/answers#index'
+      get 'liked_questions/', to: 'api/v1/questions#liked_questions'
+      post 'questions/new', to: 'api/v1/questions#create'
+      post 'liked_questions/:id', to: 'api/v1/questions#like_a_question'
+      post 'answers/new', to: 'api/v1/answers#create'
+
     end
   end
 end

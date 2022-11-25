@@ -6,9 +6,22 @@ class Api::V1::AnswersController < ApplicationController
 
   # GET /api/v1/answers
   def index
-    @answers = @question.answers.limit(PAGINATION_LIMIT).offset(offset)
+    @answers = @question.answers.order(created_at: -1).limit(PAGINATION_LIMIT).offset(offset)
 
-    render json: @answers
+    @answers = @answers.map do |answer|
+      {
+        id: answer.id.to_str,
+        content: answer.content,
+        creted_at: answer.created_at,
+        updated_at: answer.updated_at,
+        question_id: answer.question_id.to_str
+      }
+    end
+    if @answers.length > 0
+      render json: @answers
+    else
+      render error: {message: 'no answers left'}
+    end
   end
 
   # POST /api/v1/answers
@@ -16,7 +29,7 @@ class Api::V1::AnswersController < ApplicationController
     @answer = @question.answers.new(answer_params.merge(user_id: current_user.id))
 
     if @answer.save
-      render json: @answer, status: :created, location: @answer
+      render json: {message: 'success'}
     else
       render json: @answer.errors, status: :unprocessable_entity
     end
@@ -43,7 +56,7 @@ class Api::V1::AnswersController < ApplicationController
     end
 
     def set_answer
-      @answer = Answer.find(params[:id])
+      @answer = Answer.find(answer_params[:id])
     end
 
     def offset

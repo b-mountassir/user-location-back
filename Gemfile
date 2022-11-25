@@ -36,6 +36,8 @@ gem 'devise'
 
 gem 'jwt'
 
+gem 'rx', git: 'https://github.com/ReactiveX/RxRuby.git'
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -7,7 +7,8 @@ class Api::V1::SessionsController < Devise::SessionsController
       render json: {
                      "data" => {
                          "id" => user.id.to_str,
-                         "email" => user.email
+                         "email" => user.email,
+                         "created_at" => user.created_at
                      },
                      "accessToken" => user.generate_jwt
                    }
